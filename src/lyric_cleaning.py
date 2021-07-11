@@ -1,5 +1,5 @@
 def clean(string):
-	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'à', 'é', 'ó', '…', '’', '‘']
+	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'à', 'é', 'è', 'ó', 'ú', 'ñ', '…', '’', '‘', '“', "”"]
 	for char in bad_chars:
 		string = string.replace(char, "")
 	return string
