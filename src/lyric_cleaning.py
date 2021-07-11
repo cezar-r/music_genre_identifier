@@ -1,5 +1,5 @@
 def clean(string):
-	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:']
+	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—']
 	for char in bad_chars:
 		string = string.replace(char, "")
 	return string
@@ -7,8 +7,6 @@ def clean(string):
 
 
 def write_clean_file(file):
-	with open('clean.txt', 'a') as f:
-		f.write('artist|song_name|lyrics|genre\n')
 	for line in file:
 		if len(line.split('|')) == 3:
 			artist_name = line.split('|')[0]
@@ -23,7 +21,7 @@ def write_clean_file(file):
 
 			unfinished_lyrics += _lyric
 			genre = line.split('|')[1]
-			with open('clean.txt', 'a') as f:
+			with open('../lyrics/clean.txt', 'a') as f:
 				try:
 					f.write(artist_name + '|' + song_name + '|' + unfinished_lyrics + '|' + genre + '\n')
 				except:
@@ -44,7 +42,7 @@ def write_clean_file(file):
 			genre = line.split('|')[3]
 
 
-			with open('clean.txt', 'a') as f:
+			with open('../lyrics/clean.txt', 'a') as f:
 				try:
 					f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
 				except:
@@ -52,9 +50,11 @@ def write_clean_file(file):
 
 
 if __name__ == '__main__':
-	file = open("hip_hop_data2.txt", "r").readlines()
+	with open('../lyrics/clean.txt', 'w') as f:
+		f.write('artist|song_name|lyrics|genre\n')
+	file = open("../lyrics/hip_hop_data2.txt", "r").readlines()
 	write_clean_file(file)
-	file = open("edm_data2.txt", "r").readlines()
+	file = open("../lyrics/edm_data2.txt", "r").readlines()
 	write_clean_file(file)
 
 

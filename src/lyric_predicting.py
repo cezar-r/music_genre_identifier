@@ -6,8 +6,8 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from testing import get_lyrics
-from loading import clean
+from lyric_scraping import get_lyrics
+from lyric_cleaning import clean
 from sklearn.utils import shuffle
 
 testing_size = 60
@@ -31,7 +31,7 @@ def remove_dups_from_items(arr):
 
 
 def main():
-	df = pd.read_csv("clean.txt", delimiter = '|')
+	df = pd.read_csv("../lyrics/clean.txt", delimiter = '|')
 
 	rap_df = df[df['genre'] == 'Hip-Hop']
 	edm_df = df[df['genre'] != 'Hip-Hop']
