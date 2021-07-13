@@ -16,9 +16,8 @@ hip_hop_artists = ['Eminem', '50 Cent', 'J. Cole', 'Drake', 'A$AP Ferg', 'Snoop 
 				   'Mac Miller', 'Childish Gambino', 'Future', 'MF Doom', 'Big Sean', 'Kendrick Lamar', 'Jay-Z',]
 
 
-country_artists = ['The Band Perry',
-				   'Eric Church', 'Jake Owen', 'Luke Bryan', 'Carrie Underwood', 'Trace Adkins',
-				   'Darius Rucker', 'Toby Keith', 'Joe Nichols'] 
+country_artists = ['Kris Kristofferson', 'Alan Jackson', 'Loretta Lynn', 'Merle Haggard', 'Willie Nelson', 'Johnny Cash',
+					'Buck Owens', 'Hank Williams', 'Waylon Jennings', 'George Jones'] 
 				   # 'Taylor Swift', 'Blake Shelton', 'Keith Urban', 'Miranda Lambert', 'Jason Aldean', 'Kenny Chesney', 
 
 
@@ -85,7 +84,7 @@ def get_lyrics(artist,song_title):
         artist = artist[3:] 
     url = "http://azlyrics.com/lyrics/"+artist+"/"+song_title+".html"
     print(url)
-    new_url = 'http://api.scraperapi.com?api_key=d053cf9f5526234253f49ea9b76a9e7c&url=' + url 
+    new_url = 'http://api.scraperapi.com?api_key=c942669a7c4570c4b77999b716b4e3a3&url=' + url 
      
     try: 
         content = urllib.request.urlopen(new_url).read() 
@@ -130,7 +129,7 @@ def write_data(genre_data, g_type):
 			if lyrics.startswith("Exception"):
 				pass
 			else:
-				with open(f'{g_type}_data2.txt', 'a') as f:
+				with open(f'../lyrics/{g_type}_data2.txt', 'a') as f:
 					try:
 						f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
 					except:
@@ -140,7 +139,7 @@ def write_data(genre_data, g_type):
 
 
 if __name__ == '__main__':
-	albums_dict = get_albums(edm_artists)
+	albums_dict = get_albums(country_artists)
 	genre_data = get_genre_data(albums_dict)
-	write_data(genre_data, "edm")
+	write_data(genre_data, "country")
 

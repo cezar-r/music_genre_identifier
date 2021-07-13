@@ -1,5 +1,5 @@
 def clean(string):
-	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿']
+	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ì', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿']
 	for char in bad_chars:
 		string = string.replace(char, "")
 	return string
@@ -49,13 +49,14 @@ def write_clean_file(file):
 					pass
 
 
-if __name__ == '__main__':
-	with open('../lyrics/clean.txt', 'w') as f:
-		f.write('artist|song_name|lyrics|genre\n')
-	file = open("../lyrics/hip_hop_data2.txt", "r").readlines()
-	write_clean_file(file)
-	file = open("../lyrics/edm_data2.txt", "r").readlines()
-	write_clean_file(file)
+def run(genres = ['country', 'hip_hop', 'r_b', 'edm']):
+	# with open('../lyrics/clean.txt', 'w') as f:
+	# 	f.write('artist|song_name|lyrics|genre\n')
+
+	for genre in genres:
+		file = open(f"../lyrics/{genre}_data2.txt", "r").readlines()
+		write_clean_file(file)
+	
 
 
 # df = pd.read_csv("clean.txt", delimiter = '|')
