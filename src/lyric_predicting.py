@@ -149,7 +149,7 @@ def get_top_genres(df, n_genres):
 				else:
 					new_genre_dict[genre] = sorted_dict[k]
 
-	max_songs = min(i[1] for i in list(new_genre_dict.items()))
+	max_songs = min(i[1] for i in list(new_genre_dict.items())) * 1.2
 
 	top_genres = []
 	for i in range(n_genres):
@@ -185,6 +185,15 @@ def get_all_words(train, test):
 
 
 
+def get_all_words2(train):
+	all_words = set()
+	for _lyric in train:
+		lyric = _lyric.split(' ')
+		for word in lyric:
+			all_words.add(word)
+	return list(all_words)
+
+
 def get_sets(X_train, X_test, y_train, y_test):
 	all_words = get_all_words(X_train, X_test)
 
@@ -210,6 +219,22 @@ def get_sets(X_train, X_test, y_train, y_test):
 	return training_set, testing_set
 
 
+def get_sets2(X, y):
+	all_words = get_all_words2(X)
+
+	training_set = []
+
+	X_train = X.tolist()
+	for i, lyric in enumerate(X_train):
+		words = set(lyric.split(' '))
+		features = {}
+		for word in all_words:
+			features[word] = (word in words)
+		training_set.append((features, y.tolist()[i]))
+
+
+	return training_set
+
 
 
 def run_all_models(X_train, X_test, y_train, y_test, df):
@@ -232,6 +257,28 @@ def run_all_models(X_train, X_test, y_train, y_test, df):
 
 
 
+def test_all_models(X, y, model):
+
+		scores = {}
+		models = [model, MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC]
+
+		whole_set = get_sets2(X, y)
+		train = whole_set[:len(whole_set)*.8]
+		test = whole_set[len(whole_set)*.8:]
+		for model in models:
+			model = model()
+			if type(model) == NaiveBayes:
+				y_hat = model.predict(X)
+				score = model.score(y, y_hat, metrics='accuracy')
+			else:
+				classifier = SklearnClassifier(model)
+				classifier.train(train)
+				score = nltk.classify.accuracy(classifier, test)
+			scores[model] = score
+		return scores
+
+
+
 def run_input(model):
 
 		print('\n')
@@ -249,9 +296,10 @@ def run_input(model):
 			return
 
 
-def main(run_models = False):
+
+def main(run_models = False, run_testing = False):
 	if run_models:
-		df = pd.read_csv("../lyrics/new_data.txt", delimiter = '|', lineterminator='\n')
+		df = pd.read_csv("../lyrics/clean_test_12.txt", delimiter = '|', lineterminator='\n')
 
 		df[f'genre\r'] = df.loc[:, f'genre\r'].apply(clean_col)
 		df.columns = ['arist_name', 'song_name', 'lyrics', 'genre']
@@ -260,7 +308,7 @@ def main(run_models = False):
 		# use voting system to predict outcome
 
 		df = shuffle(top_genres_df)
-
+		print(np.unique(df.genre.values))
 		X, y = df.lyrics.values, df.genre.values
 		X_train, X_test, y_train, y_test = train_test_split(X, y)
 
@@ -274,6 +322,29 @@ def main(run_models = False):
 		save_model.close()
 		print('Saved pickle')
 		# save to pickle file
+	if run_testing:
+		# open test_file
+		'''
+		model_file = open("model.pickle", 'rb')
+		model = pickle.load(model_file)
+		model_file.close()
+
+		df[f'genre\r'] = df.loc[:, f'genre\r'].apply(clean_col)
+		df.columns = ['arist_name', 'song_name', 'lyrics', 'genre']
+		top_genres_df = get_top_genres(df, 5)
+
+		df = shuffle(top_genres_df)
+		print(np.unique(df.genre.values))
+		X, y = df.lyrics.values, df.genre.values
+
+		
+		top_genres_df = get_top_genres(df, 5)
+		# use voting system to predict outcome
+		all_scores = list(test_all_models(X, y, model))
+
+
+		'''
+
 
 	else:
 		model_file = open("model.pickle", 'rb')

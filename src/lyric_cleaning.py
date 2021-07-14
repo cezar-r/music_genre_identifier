@@ -1,12 +1,12 @@
 def clean(string):
-	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ì', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿']
+	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ì', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿', f'\n']
 	for char in bad_chars:
 		string = string.replace(char, "")
 	return string
 
 
 
-def write_clean_file(file):
+def write_clean_file(file, outfile):
 	for line in file:
 		if len(line.split('|')) == 3:
 			artist_name = line.split('|')[0]
@@ -21,11 +21,14 @@ def write_clean_file(file):
 
 			unfinished_lyrics += _lyric
 			genre = line.split('|')[1]
-			with open('../lyrics/clean.txt', 'a') as f:
-				try:
-					f.write(artist_name + '|' + song_name + '|' + unfinished_lyrics + '|' + genre + '\n')
-				except:
-					pass
+			if len(unfinished_lyrics.split(' ')) < 30:
+				continue
+			else:
+				with open(f'../lyrics/{outfile}.txt', 'a') as f:
+					try:
+						f.write(artist_name + '|' + song_name + '|' + unfinished_lyrics + '|' + genre + '\n')
+					except:
+						pass
 
 		elif len(line.split('|')) == 1:
 
@@ -40,9 +43,9 @@ def write_clean_file(file):
 			lyrics = line.split('|')[2]
 			lyrics = clean(lyrics)
 			genre = line.split('|')[3]
+		
 
-
-			with open('../lyrics/clean.txt', 'a') as f:
+			with open(f'../lyrics/{outfile}.txt', 'a') as f:
 				try:
 					f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
 				except:
@@ -54,7 +57,7 @@ def run(genres = ['country', 'hip_hop', 'r_b', 'edm']):
 	# 	f.write('artist|song_name|lyrics|genre\n')
 
 	for genre in genres:
-		file = open(f"../lyrics/{genre}_data2.txt", "r").readlines()
+		file = open(f"../lyrics/{genre}_data3.txt", "r").readlines()
 		write_clean_file(file)
 	
 
