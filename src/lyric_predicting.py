@@ -272,6 +272,7 @@ def main(run_models = False):
 		save_model = open("model.pickle", "wb")
 		pickle.dump(model, save_model)
 		save_model.close()
+		print('Saved pickle')
 		# save to pickle file
 
 	else:
