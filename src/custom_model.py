@@ -14,17 +14,6 @@ class NaiveBayes:
 
 
 	def fit(self, df):
-		'''
-		meta_dict = {}
-		X, y = df['lyrics'], df['genre']
-
-		for genre in y:
-			genre_dict = {}
-			genre_lyrics = 
-		'''
-
-		# creates TF-IDF table
-
 		meta_dict = {}
 		lyrics = df['lyrics']
 		uniq_genres = df['genre'].unique()
@@ -69,21 +58,40 @@ class NaiveBayes:
 		self.tfidf = pd.DataFrame(list(meta_dict_freq.values()), index = list(meta_dict_freq.keys()))
 
 
-	def predict(self, lyric):
-		lyric = lyric.split(' ')
+	def predict(self, lyric, full_lyric = True):
+		if not full_lyric:
+			lyric = lyric.split(' ')
 
-		probability_dict = {}
+			probability_dict = {}
 
-		for i, genre in enumerate(list(self.tfidf.index.values)):
-			genre_probs = []
-			for _word in lyric:
-				try:
-					word = _word.lower()
-					col_idx = list(self.tfidf.columns.values).index(word)
-					genre_probs.append(self.tfidf.iloc[i, col_idx])
-				except:
-					genre_probs.append(0)
+			for i, genre in enumerate(list(self.tfidf.index.values)):
+				genre_probs = []
+				for _word in lyric:
+					try:
+						word = _word.lower()
+						col_idx = list(self.tfidf.columns.values).index(word)
+						genre_probs.append(self.tfidf.iloc[i, col_idx])
+					except:
+						genre_probs.append(0)
 
-			probability_dict[genre] = np.mean(genre_probs)
+				probability_dict[genre] = np.mean(genre_probs)
+			return list(probability_dict.items())
+		else:
+			guesses = []
+			for l in lyric:
+				guess = self.predict(l, full_lyric = False)
+				guess = sorted(guess, key=lambda x: x[1])[::-1]
+				guesses.append(guess[0][0])
+			return guesses
+		
 
-		return list(probability_dict.items())
+	def score(self, y_test, y_hat, metrics = 'accuracy'):
+		if metrics == 'accuracy':
+			scores = []
+			for i, j in list(zip(y_test, y_hat)):
+				if i == j:
+					scores.append(1)
+				else:
+					scores.append(0)
+			self._score = sum(scores) / len(scores)
+			return self._score
