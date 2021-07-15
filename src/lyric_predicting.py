@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import nltk
 import pickle
+import warnings
 from lyric_scraping import get_lyrics
 from lyric_cleaning import clean, run
 from sklearn.utils import shuffle
@@ -18,8 +19,23 @@ from sklearn.model_selection import train_test_split
 from statistics import mode
 from sklearn.metrics import accuracy_score
 plt.style.use("dark_background")
+warnings.filterwarnings("ignore")
 
 sid = SentimentIntensityAnalyzer()
+
+
+# TODO
+'''
+PLOTS
+	sentiment of each genre
+	word cloud
+	performance of models with different sizes of data (100 songs - 519 songs -> change max_length )
+MODEL VOTE SYSTEM
+GUI
+README
+PRESENTATION
+'''
+
 
 
 def text_to_score(x):
@@ -113,10 +129,10 @@ def clean_col(x):
 
 
 genre_groups = {'hip-hop' : ['hip-hop', 'hip hop', 'hiphop', 'rap', 'trap', 'atlanta', 'gangsta rap', 'east coast rap'] ,
-				'country' : ['country', 'modern country', 'country rock', 'good country', 'big green tractor'],
-				'rock' : ['alternative rock', 'indie rock', 'nu metal', 'emo', 'country rock'],
+				'country' : ['country', 'modern country', 'country rock', 'good country', 'big green tractor', 'alt-country', 'neo-traditionalist country', 'new country', 'male country'],
+				'rock' : ['alternative rock', 'indie rock', 'nu metal', 'emo', 'country rock', 'rock', 'metal', 'classic rock'],
 				'punk' : ['alternative', 'punk', 'indie', 'pop punk', 'psychedelic rock', 'skate punk', 'pop-punk', 'indie pop'],
-				'edm' : ['dance', 'electronic', 'future bass', 'eurodance', 'house', 'electronica'] }
+				'edm' : ['dance', 'electronic', 'future bass', 'eurodance', 'house', 'electronica', 'dubstep'] }
 
 
 
@@ -130,8 +146,8 @@ def under_max_length(arr, genre, max_songs):
 	return True
 
 
-
-def get_top_genres(df, n_genres):
+def get_top_genres(df, n_genres, sample_size = None):
+	print(sample_size)
 	genre_dict = {}
 	for genre in df.genre.values:
 		if genre in genre_dict:
@@ -140,6 +156,7 @@ def get_top_genres(df, n_genres):
 			genre_dict[genre] = 1
 
 	sorted_dict = {k: v for k, v in sorted(genre_dict.items(), key=lambda item: item[1])[::-1]}
+
 	new_genre_dict = {}
 	for k in sorted_dict:
 		for genre in genre_groups:
@@ -148,14 +165,15 @@ def get_top_genres(df, n_genres):
 					new_genre_dict[genre] += sorted_dict[k]
 				else:
 					new_genre_dict[genre] = sorted_dict[k]
-
-	max_songs = min(i[1] for i in list(new_genre_dict.items())) * 1.2
-
+	if not sample_size:
+		max_songs = min(i[1] for i in list(new_genre_dict.items())) 
+	else:
+		max_songs = sample_size
 	top_genres = []
 	for i in range(n_genres):
 		top_genres.append(list(new_genre_dict.items())[i][0])
 
-
+	print(max_songs)
 	new_genre_vals = []
 	new_lyric_vals = []
 	for i in range(len(df.genre.values)):
@@ -216,6 +234,8 @@ def get_sets(X_train, X_test, y_train, y_test):
 			features[word] = (word in words)
 		testing_set.append((features, y_test.tolist()[i]))
 
+
+	# training_set/testing_set object explained below
 	return training_set, testing_set
 
 
@@ -232,7 +252,27 @@ def get_sets2(X, y):
 			features[word] = (word in words)
 		training_set.append((features, y.tolist()[i]))
 
+	'''
+	training_set is a list of tuples, the first element is a dict where eah key is a keyword and each value is a Boolean. the second element is the class
 
+	[(
+	  {
+	   keyword1: True, 
+	   keyword2: False,
+	   keyword3: True
+	  }, 
+	  genre1
+	 ),
+	 (
+	  {
+	   keyword1: False,
+	   keyword2: True,
+	   keyword3: False
+	  }, 
+	  genre2
+	 )
+	]
+	'''
 	return training_set
 
 
@@ -244,6 +284,7 @@ def run_all_models(X_train, X_test, y_train, y_test, df):
 	training_set, testing_set = get_sets(X_train, X_test, y_train, y_test)
 	for model in models:
 		model = model()
+		print(model)
 		if type(model) == NaiveBayes:
 			model.fit(df)
 			y_hat = model.predict(X_test)
@@ -252,6 +293,11 @@ def run_all_models(X_train, X_test, y_train, y_test, df):
 			classifier = SklearnClassifier(model)
 			classifier.train(training_set)
 			score = nltk.classify.accuracy(classifier, testing_set)
+
+			save_model = open(f'model-{model}.picle', 'wb')
+			pickle.dump(model, save_model)
+			save_model.close()
+
 		scores[model] = score
 	return scores
 
@@ -263,17 +309,20 @@ def test_all_models(X, y, model):
 		models = [model, MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC]
 
 		whole_set = get_sets2(X, y)
-		train = whole_set[:len(whole_set)*.8]
-		test = whole_set[len(whole_set)*.8:]
+		# train = whole_set[:int(len(whole_set)*.8)]
+		# test = whole_set[int(len(whole_set)*.8):]
 		for model in models:
-			model = model()
 			if type(model) == NaiveBayes:
 				y_hat = model.predict(X)
 				score = model.score(y, y_hat, metrics='accuracy')
+				print(y, y_hat)
 			else:
-				classifier = SklearnClassifier(model)
-				classifier.train(train)
-				score = nltk.classify.accuracy(classifier, test)
+				model_file = open(f'model-{model}.pickle', 'rb')
+				model = pickle.load(model_file)
+				model_file.close()
+
+				model = model()
+				score = nltk.classify.accuracy(model, whole_set)
 			scores[model] = score
 		return scores
 
@@ -292,23 +341,29 @@ def run_input(model):
 		go_again = input('Go again? [Y][N]\n')
 		if go_again.lower() == 'y':
 			run_input(model)
-		else:
-			return
+		return
 
 
 
-def main(run_models = False, run_testing = False):
+def main(run_models = False, test_models = False, sample_size = False, user_input = False):
 	if run_models:
-		df = pd.read_csv("../lyrics/clean_test_12.txt", delimiter = '|', lineterminator='\n')
+		df = pd.read_csv("../lyrics/clean_lyric_data.txt", delimiter = '|', lineterminator='\n')
 
-		df[f'genre\r'] = df.loc[:, f'genre\r'].apply(clean_col)
 		df.columns = ['arist_name', 'song_name', 'lyrics', 'genre']
+		df['genre'] = df.loc[:, 'genre'].apply(clean_col)
 
-		top_genres_df = get_top_genres(df, 5)
-		# use voting system to predict outcome
+		if not sample_size:
+			top_genres_df = get_top_genres(df, 5)
+		else:
+			top_genres_df = get_top_genres(df, 5, sample_size = sample_size)
 
-		df = shuffle(top_genres_df)
-		print(np.unique(df.genre.values))
+		df = shuffle(top_genres_df)-
+		print(len(df['genre'][df['genre'] == 'hip-hop'].values))
+		print(len(df['genre'][df['genre'] == 'country'].values))
+		print(len(df['genre'][df['genre'] == 'edm'].values))
+		print(len(df['genre'][df['genre'] == 'rock'].values))
+		print(len(df['genre'][df['genre'] == 'punk'].values))
+		# print(np.unique(df.genre.values))
 		X, y = df.lyrics.values, df.genre.values
 		X_train, X_test, y_train, y_test = train_test_split(X, y)
 
@@ -321,10 +376,13 @@ def main(run_models = False, run_testing = False):
 		pickle.dump(model, save_model)
 		save_model.close()
 		print('Saved pickle')
-		# save to pickle file
-	if run_testing:
+	if test_models:
+		print('testing')
 		# open test_file
-		'''
+		# clean_test_lyric_data
+		
+		df = pd.read_csv("../lyrics/clean_test_lyric_data.txt", delimiter = '|', lineterminator='\n')
+
 		model_file = open("model.pickle", 'rb')
 		model = pickle.load(model_file)
 		model_file.close()
@@ -332,31 +390,59 @@ def main(run_models = False, run_testing = False):
 		df[f'genre\r'] = df.loc[:, f'genre\r'].apply(clean_col)
 		df.columns = ['arist_name', 'song_name', 'lyrics', 'genre']
 		top_genres_df = get_top_genres(df, 5)
-
 		df = shuffle(top_genres_df)
 		print(np.unique(df.genre.values))
 		X, y = df.lyrics.values, df.genre.values
 
-		
-		top_genres_df = get_top_genres(df, 5)
-		# use voting system to predict outcome
-		all_scores = list(test_all_models(X, y, model))
-
-
-		'''
-
-
+		all_scores = list(test_all_models(X, y, model).items())
+		pprint2(all_scores)
+	
 	else:
 		model_file = open("model.pickle", 'rb')
 		model = pickle.load(model_file)
 		model_file.close()
 
-		# open from pickle file
+	if user_input:
+			run_input(model)
+	return all_scores
 
-	run_input(model)
-	return
+
+
+def plot_performance(scores_dict):
+	x = [i[0] for i in list(scores_dict.items())[0][1]]
+	print(scores_dict)
+	colors = ['red', 'blue', 'yellow', 'orange', 'green', 'purple', 'cyan', 'fuchsia']
+	i = 0
+	for model in scores_dict:
+		y = [i[1] for i in scores_dict[model]]
+		x = [i[0] for i in scores_dict[model]]
+		plt.plot(x, y, label = model, color = colors[i])
+		i += 1
+
+	plt.legend(loc = 'upper right')
+	plt.show()
+
+
+
+def test_performance():
+	scores_dict = {}
+	for i in range(100, 500, 5):
+		scores = main(run_models = True, sample_size = i)
+		for model, score  in scores:
+			if type(model) == NaiveBayes:
+				model = 'NaiveBayes'
+			if f'{model}' in scores_dict:
+				scores_dict[f'{model}'].append((i, score))
+			else:
+				scores_dict[f'{model}'] = [(i, score)]
+
+	plot_performance(scores_dict)
+
+
+	# {"Logistic Regression" : [(100, .65), (101, .65)]}
 
 
 if __name__ == '__main__':
-	main(run_models = True)
+	# test_performance()
+	main(test_models = True)
 

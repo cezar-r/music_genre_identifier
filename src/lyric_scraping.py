@@ -84,7 +84,7 @@ def get_lyrics(artist,song_title):
         artist = artist[3:] 
     url = "http://azlyrics.com/lyrics/"+artist+"/"+song_title+".html"
     print(url)
-    new_url = 'http://api.scraperapi.com?api_key=c942669a7c4570c4b77999b716b4e3a3&url=' + url 
+    new_url = 'http://api.scraperapi.com?api_key=800a43e7386a5a4f5801c8762c3a4aab&url=' + url 
      
     try: 
         content = urllib.request.urlopen(new_url).read() 

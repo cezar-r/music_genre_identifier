@@ -44,12 +44,14 @@ def write_clean_file(file, outfile):
 			lyrics = clean(lyrics)
 			genre = line.split('|')[3]
 		
-
-			with open(f'../lyrics/{outfile}.txt', 'a') as f:
-				try:
-					f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
-				except:
-					pass
+			if len(lyrics.split(' ')) < 30:
+				continue
+			else:
+				with open(f'../lyrics/{outfile}.txt', 'a') as f:
+					try:
+						f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
+					except:
+						pass
 
 
 def run(genres = ['country', 'hip_hop', 'r_b', 'edm']):

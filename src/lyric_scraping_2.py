@@ -5,12 +5,12 @@ from lyric_scraping import get_lyrics
 
 last_fm_api_key = 'e34c6de6772e623c5f8fac80e4752db4'
 base_url = 'http://ws.audioscrobbler.com'
-scraper_url = 'http://api.scraperapi.com?api_key=c942669a7c4570c4b77999b716b4e3a3&url='
+scraper_url = 'http://api.scraperapi.com?api_key=800a43e7386a5a4f5801c8762c3a4aab&url='
 
-# pnk_artists = ['my chemical romance', 'saves the day', 'the get up kids', 'the bouncing souls', 'nofx', 'the offspring', 'alkaline trio', 'paramore', 'jimmy eat world', 'buzzcocks', 'green day']
-# rck_artists = ['spoon', 'john mayer', 'the strokes', 'linkin park', 'u2', 'the white stripes', 'radiohead', 'mgmt', 'brian eno', 'cat power', 'nickelback', 'metallica', 'the walkmen']
-# rnb_artists = [ 'bow wow', 'the weeknd', 'chris brown' ]
-edm_artists = ['kygo', 'david guetta', 'the chainsmokers', 'calvin harris', 'steve aoki', 'zedd', 'diplo', 'jauz', 'cheat codes', 'dillon francis']
+pnk_artists = ['my chemical romance', 'saves the day', 'the get up kids', 'the bouncing souls', 'nofx', 'the offspring', 'alkaline trio', 'paramore', 'jimmy eat world', 'buzzcocks', 'green day']
+rck_artists = ['spoon', 'john mayer', 'the strokes', 'linkin park', 'u2', 'the white stripes', 'radiohead', 'mgmt', 'brian eno', 'cat power', 'nickelback', 'metallica', 'the walkmen']
+rnb_artists = [ 'bow wow', 'the weeknd', 'chris brown' ]
+edm_artists = ['the chainsmokers', 'calvin harris', 'steve aoki', 'zedd', 'diplo', 'jauz', 'cheat codes', 'dillon francis']
 ctr_artists = ['Jon Pardi', 'Chris Young', 'Garth Brooks', 'Jason Isbell']
 
 
@@ -18,11 +18,10 @@ ctr_artists = ['Jon Pardi', 'Chris Young', 'Garth Brooks', 'Jason Isbell']
 test_pnk_artists = ['Boston Manor', 'The Chats', 'X', 'All time low', 'the boom town rats']
 test_rck_artists = ['Fleetwood Mac', 'Queen', 'The Beatles', 'Elton John', 'Pink Floyd']
 test_rap_artists = ['Lil Baby', 'Travis Scott', 'Dababy', 'Roddy Ricch', 'Joyner Lucas']
-test_edm_artists = ['Illenium', 'Porter Robins', 'Flume', 'Diplo', 'Galantis']
+test_edm_artists = ['Flume', 'Diplo', 'Galantis']
 test_ctr_artists = ['Lady A', 'Toby Keith', 'Miranda Lambert', 'Rascal Flatts', 'Lee Brice']
 
-artists = edm_artists + ctr_artists
-
+artists = test_edm_artists + test_ctr_artists
 
 
 def clean_song_name(name):
@@ -31,6 +30,9 @@ def clean_song_name(name):
 	for word in name:
 		if word == '':
 			continue
+		elif word[0] == '#':
+			word = word[1:]
+			correct_name += word
 		elif word[0] != '(':
 			correct_name += word + ' '
 		else:
@@ -96,7 +98,7 @@ def main():
 				if genre == artist_name:
 					continue
 				else:
-					with open(f'../lyrics/new_data.txt', 'a') as f:
+					with open(f'../lyrics/new_test_data.txt', 'a') as f:
 						print('writing')
 						try:
 							f.write(artist_name + '|' + song_name + '|' + lyrics + '|' + genre + '\n')
@@ -104,15 +106,16 @@ def main():
 							pass
 
 
+
 def _write_clean(file, outfile, run = False):
 	if run:
-			file = open(f"../lyrics/{file}.txt", "r").readlines()
-			write_clean_file(file, outfile)
+		file = open(f"../lyrics/{file}.txt", "r").readlines()
+		write_clean_file(file, outfile)
 
 
-# _write_clean("new_data", "clean_new_data", run = False)
 
-main()
+_write_clean("new_test_data", "clean_test_lyric_data", run = True)
+# main()
 # {'error': 6, 'message': 'Track not found'}
 
 
