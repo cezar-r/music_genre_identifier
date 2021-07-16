@@ -37,23 +37,27 @@ For this problem, I utilized several machine learning models from [SKLearn](http
 1. **Fitting the Data into Models**
 
 - These models are normally fit with numerical values rather than words, so our data needs to be converted. The normal approach is to use a TFIDF and vectorize it, however SKLearn simiplifies this for us with the SKLearn Classifier object. This object simply takes in a model as well as `data`. `data` is lyric and genre data, which usually gets split into `X_train, X_test, y_train, y_test`. However `data` needs to be organized in a way such that we have a dictionary where the keys are our vocabulary and the values are a boolean value of whether or not that word appears in our current sample. This dictionary is fit inside of a tuple, where the second value represents the genre. `data` is a list of these tuples. Here is a visualization to assist with this:
-```
-[(
-  {
-  keyword1: True,
-  keyword2: False,
-  keyword3: True
-  },
-  genre1
- ),
- (
-  {
-  keyword1: True,
-  keyword2: False, 
-  keyword3: False
-  },
-  genre2
- )]
+```python
+data = [(
+         {
+         keyword1: True,
+         keyword2: False,
+         keyword3: True
+         },
+         genre1
+        ),
+        (
+         {
+         keyword1: True,
+         keyword2: False, 
+         keyword3: False
+         },
+         genre2
+        )]
+classifier = SklearnClassifier(model)
+classifier.train(data_train)
+score = nltk.classify.accuracy(classifier, data_test)       
+
 ```
 
 2.  **Running the Models**
