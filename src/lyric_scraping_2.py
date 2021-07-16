@@ -114,7 +114,7 @@ def _write_clean(file, outfile, run = False):
 
 
 
-_write_clean("new_test_data", "clean_test_lyric_data", run = True)
+_write_clean("clean_test_lyric_data", "clean_test_lyric_data2", run = True)
 # main()
 # {'error': 6, 'message': 'Track not found'}
 

@@ -1,7 +1,8 @@
 def clean(string):
-	bad_chars = ['</i>', '<i>', '[', ']', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ì', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿', f'\n']
+	bad_chars = ['</i>', '<i>', '[', ']', ',', '(', ')', 'INTRO:', 'Chorus:', 'CHORUS:', 'Verse:', 'Bridge:', 'Hook:', 'HOOK:', '—', '–', '�', 'á', 'à', 'â', 'ä', 'ç', 'é', 'è', 'ë', 'í', 'ì', 'ï', 'ì', 'Ò', 'ó', 'ò', 'ö', 'ú', 'ù', 'û', 'ü', 'ß', 'ñ', '…', '’', '‘', '“', '”', '¿', f'\n', "'", '"', ]
 	for char in bad_chars:
 		string = string.replace(char, "")
+		string = ' '.join([i.lower() for i in string.split(' ')])
 	return string
 
 
@@ -34,8 +35,9 @@ def write_clean_file(file, outfile):
 
 			_lyric = line.strip('\n')
 			_lyric = clean(_lyric)
+			print(_lyric)
 
-			unfinished_lyrics += _lyric
+			unfinished_lyrics = _lyric
 
 		else:
 			artist_name = line.split('|')[0]
