@@ -78,6 +78,7 @@ After running these models through several iterations, these were the accuracy s
 These results are not spectacular by any means, however it is important to keep in mind the baseline for this is 20% (randomly guessing the genre). 
 We can also see where the models might be getting confused with classification.
 <img src="images/figure_of_truth.png">
+
 Let's zoom in on that cluster
 <img src="images/figure_of_truth_zoomed_in.png">
 
