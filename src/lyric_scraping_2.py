@@ -3,25 +3,11 @@ import json
 from lyric_cleaning import clean, write_clean_file
 from lyric_scraping import get_lyrics
 
-last_fm_api_key = 'e34c6de6772e623c5f8fac80e4752db4'
+last_fm_api_key = """ENTER LAST FM API KEY HERE"""
 base_url = 'http://ws.audioscrobbler.com'
-scraper_url = 'http://api.scraperapi.com?api_key=800a43e7386a5a4f5801c8762c3a4aab&url='
+scraper_url = """ENTER SCRAPER URL HERE"""
 
-pnk_artists = ['my chemical romance', 'saves the day', 'the get up kids', 'the bouncing souls', 'nofx', 'the offspring', 'alkaline trio', 'paramore', 'jimmy eat world', 'buzzcocks', 'green day']
-rck_artists = ['spoon', 'john mayer', 'the strokes', 'linkin park', 'u2', 'the white stripes', 'radiohead', 'mgmt', 'brian eno', 'cat power', 'nickelback', 'metallica', 'the walkmen']
-rnb_artists = [ 'bow wow', 'the weeknd', 'chris brown' ]
-edm_artists = ['the chainsmokers', 'calvin harris', 'steve aoki', 'zedd', 'diplo', 'jauz', 'cheat codes', 'dillon francis']
-ctr_artists = ['Jon Pardi', 'Chris Young', 'Garth Brooks', 'Jason Isbell']
-
-
-# test sets of each genre (5 artists per)
-test_pnk_artists = ['Boston Manor', 'The Chats', 'X', 'All time low', 'the boom town rats']
-test_rck_artists = ['Fleetwood Mac', 'Queen', 'The Beatles', 'Elton John', 'Pink Floyd']
-test_rap_artists = ['Lil Baby', 'Travis Scott', 'Dababy', 'Roddy Ricch', 'Joyner Lucas']
-test_edm_artists = ['Flume', 'Diplo', 'Galantis']
-test_ctr_artists = ['Lady A', 'Toby Keith', 'Miranda Lambert', 'Rascal Flatts', 'Lee Brice']
-
-artists = [test_edm_artists + test_ctr_artists]
+artists = ["""ENTER CONCATED LIST OF ARTISTS HERE"""]
 
 
 def clean_song_name(name):
