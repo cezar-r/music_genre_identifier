@@ -46,7 +46,7 @@ def text_to_score(x):
 
 
 def pprint(list_of_tups, show = False):
-	"""Convert a string of text to number between -1 and 1 representing sentiment
+	"""Prints scores for each model
     
     Parameters
     ----------
@@ -78,7 +78,7 @@ def pprint(list_of_tups, show = False):
 
 
 def pprint2(list_of_tups, show = False):
-	"""Convert a string of text to number between -1 and 1 representing sentiment
+	"""Prints score for each model
     
     Parameters
     ----------
