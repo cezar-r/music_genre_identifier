@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 headers = {
-    'x-rapidapi-key': "9237b582dbmsh4764c18bdbf6380p1ef6f2jsn6e2ee0f062a7",
+    'x-rapidapi-key': """ENTER RAPID API KEY HERE""",
     'x-rapidapi-host': "theaudiodb.p.rapidapi.com"
     }
 
@@ -93,7 +93,7 @@ def get_lyrics(artist,song_title):
         artist = artist[3:] 
     url = "http://azlyrics.com/lyrics/"+artist+"/"+song_title+".html"
     print(url)
-    new_url = 'http://api.scraperapi.com?api_key=800a43e7386a5a4f5801c8762c3a4aab&url=' + url 
+    new_url = """ENTER SCRAPER URL HERE""" + url 
      
     try: 
         content = urllib.request.urlopen(new_url).read() 
