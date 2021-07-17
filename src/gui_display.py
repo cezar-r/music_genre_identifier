@@ -29,7 +29,7 @@ class GUI:
 				text_color = 'white', 
 				key = 'i1', 
 				font=('Segoe UI Semibold', 20)
-				)
+			)
 		],
 		[sg.Text('Enter artist name', 
 				font=('Segoe UI Semibold', 20)
@@ -38,7 +38,7 @@ class GUI:
 				text_color = 'white', 
 				key = 'i2', 
 				font=('Segoe UI Semibold', 20)
-				)
+			)
 		],
 		[sg.Button('Run', 
 				button_color = 'fuchsia', 
@@ -47,7 +47,7 @@ class GUI:
 			sg.Button('Clear', 
 				button_color = 'white', 
 				size=(15, 0)
-				 )
+			  )
 		],
 		[sg.Text('Prediction:', 
 				font=('Segoe UI Semibold', 20)
