@@ -6,6 +6,6 @@ from lyric_predicting import get_word_set_input
 
 def run():
 	g = GUI(get_lyrics, clean, get_word_set_input)
-
+	return
 
 run()

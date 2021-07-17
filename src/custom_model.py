@@ -10,6 +10,36 @@ from statistics import mode
 stop_words = 'a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,could,dear,did,do,does,either,else,ever,every,for,from,get,got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,is,it,its,just,least,let,like,likely,may,me,might,most,must,my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,rather,said,say,says,she,should,since,so,some,than,that,the,their,them,then,there,these,they,this,tis,to,too,twas,us,wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would,yet,you,your'.split(',')
 
 class NaiveBayes:
+	"""Custom Naive Bayes model that takes the mean likelihood rather than log sum of likelihoods
+    
+    Methods
+    ----------
+    _get_usage(): returns total usage of word across all genres 
+    	
+    fit(): fits data into tfidf
+    	Parameters
+    	----------
+    	df: pd.DataFrame
+    		all data
+
+    predict(): predicts the class based on a lyric
+    	Parameters
+    	----------
+    	lyric: string or array
+    		if lyric is a arr, function will recurse over each lyric in arr
+    	full_lyric: bool
+    		if True, function assumes lyric is of type(arr) will recurse over each lyric in arr
+
+    score(): returns the accuracy of the guesses vs. actual
+    	Parameters
+    	----------
+    	y_test: arr
+    		arr of actual classes
+    	y_hat: arr
+    		arr of predicted classes
+    	metrics: str
+    		if metrics is accuarcy, function will perform accuracy test
+    """
 
 	def _get_usage(self, d, w):
 		total = 0
@@ -65,7 +95,7 @@ class NaiveBayes:
 			meta_dict_freq[genre] = genre_dict_freq
 		
 		self.tfidf = pd.DataFrame(list(meta_dict_freq.values()), index = list(meta_dict_freq.keys()))
-		print(len(self.tfidf.columns.values))
+		print(len(self.tfidf.columns))
 
 
 	def predict(self, lyric, full_lyric = True):
@@ -106,15 +136,18 @@ class NaiveBayes:
 			self._score = sum(scores) / len(scores)
 			return self._score
 
-'''
-from nltk.classify.scikitlearn import SklearnClassifier
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.svm import SVC, LinearSVC, NuSVC
-'''
 
 class Council(ClassifierI):
-
+	"""Custom Naive Bayes model that takes the mean likelihood rather than log sum of likelihoods
+    
+    Methods
+    ----------
+    classify(): returns prediction of each model 
+    	Parameters
+    	----------
+    	feautes: arr
+    		list of data
+    """
 	def __init__(self, *classifiers):
 		self._classifiers = classifiers
 

@@ -21,10 +21,18 @@ test_rap_artists = ['Lil Baby', 'Travis Scott', 'Dababy', 'Roddy Ricch', 'Joyner
 test_edm_artists = ['Flume', 'Diplo', 'Galantis']
 test_ctr_artists = ['Lady A', 'Toby Keith', 'Miranda Lambert', 'Rascal Flatts', 'Lee Brice']
 
-artists = test_edm_artists + test_ctr_artists
+artists = [test_edm_artists + test_ctr_artists]
 
 
 def clean_song_name(name):
+	"""Cleans the name of a song 
+	ex: "song_name (feat. artist_name)"" -> "song_name"
+    
+    Parameters
+    ----------
+    name: str
+    	string of song name that is getting cleaned
+    """
 	name = name.split(' ')
 	correct_name = ''
 	for word in name:
@@ -42,6 +50,13 @@ def clean_song_name(name):
 
 
 def get_songs(artist):
+	"""Gets a list of all songs for a given artist
+    
+    Parameters
+    ----------
+    artist: str
+    	string of artist we are getting songs for
+    """
 	songs = []
 	response = requests.get(base_url + f'/2.0/?method=artist.gettoptracks&artist={artist}&api_key={last_fm_api_key}&format=json')
 	json_text = json.loads(response.text)
@@ -55,6 +70,12 @@ def get_songs(artist):
 
 
 def main():
+	"""Runs through list of all artists and each song for that artist
+	Fetches lyrics and genre for that song and writes out to file
+    
+    Parameters
+    ----------
+    """
 	for artist_name in artists:
 
 		songs = get_songs(artist_name)
@@ -108,15 +129,26 @@ def main():
 
 
 def _write_clean(file, outfile, run = False):
+	"""Writes a new clean file from a given file
+    
+    Parameters
+    ----------
+    file: str
+    	string of file name we are getting lyrics from 
+    outfile: str
+    	string of file name we are writing lyrics into
+    run: bool
+    	if True function will run, added as a layer of security so as to not accidentally overwrite file.
+    """
 	if run:
 		file = open(f"../lyrics/{file}.txt", "r").readlines()
 		write_clean_file(file, outfile)
 
 
 
-_write_clean("clean_test_lyric_data", "clean_test_lyric_data2", run = True)
-# main()
-# {'error': 6, 'message': 'Track not found'}
+if __name__ == '__main__':
+	main()
+
 
 
 

@@ -16,6 +16,7 @@ from nltk.classify.scikitlearn import SklearnClassifier
 from custom_model import NaiveBayes, Council
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC, LinearSVC, NuSVC
 from sklearn.decomposition import NMF, PCA
 from sklearn.model_selection import train_test_split
@@ -25,53 +26,35 @@ from sklearn.metrics import accuracy_score
 import matplotlib.patches as mpatches
 plt.style.use("dark_background")
 warnings.filterwarnings("ignore")
-
 sid = SentimentIntensityAnalyzer()
-
 
 # TODO
 '''
-PLOTS
-	popular words per genre (NMF)
-README
-PRESENTATION
-
-try random forest and boosting
 prob_classify
 '''
 
-
-
 def text_to_score(x):
+	"""Convert a string of text to number between -1 and 1 representing sentiment
+    
+    Parameters
+    ----------
+    x: str
+    	string of text to be converted into sentiment value
+    """
 	return sid.polarity_scores(x)['compound']
 
 
 
-def build_og_df(genres, df):
-	dfs_arr = []
-	smallest = 100000
-	for genre in genres:
-
-		dfs_arr.append(df[df['genre'] == genre_hash[genre]])
-		if len(df[df['genre'] == genre_hash[genre]]) < smallest:
-			smallest = len(df[df['genre'] == genre_hash[genre]])
-	print(smallest)
-	new_dfs_arr = []
-	for dfs in dfs_arr:
-		new_dfs_arr.append(dfs.iloc[:smallest, :])
-
-	return shuffle(pd.concat(new_dfs_arr, axis=0))
-
-
-
-def plot_genre_means(ax, dfs, genres):
-	c = ['red', 'green', 'purple']
-	for i, genre in enumerate(genres):
-		ax.axhline(dfs['sentiment'][dfs['genre'] == genre_hash[genre]].mean(), color=c[i], label=genre, xmin=0, xmax=1)
-
-
-
 def pprint(list_of_tups, show = False):
+	"""Convert a string of text to number between -1 and 1 representing sentiment
+    
+    Parameters
+    ----------
+    list_of_tips: arr
+    	array of tuples(model, score)
+    show: bool
+    	how many models to be shown
+    """
 
 	if not show:
 		show = len(list_of_tups) - 1
@@ -95,6 +78,16 @@ def pprint(list_of_tups, show = False):
 
 
 def pprint2(list_of_tups, show = False):
+	"""Convert a string of text to number between -1 and 1 representing sentiment
+    
+    Parameters
+    ----------
+	list_of_tips: arr
+    	array of tuples(model, score)
+    show: bool
+    	how many models to be shown
+
+    """
 	if not show:
 		show = len(list_of_tups) - 1
 
@@ -112,6 +105,13 @@ def pprint2(list_of_tups, show = False):
 
 
 def clean_col(x):
+	"""Used in .apply method to clean each value in a column - strips \r from str, or returns none if value is float (np.nan)
+    
+    Parameters
+    ----------
+    x: str
+    	string of text to be converted into sentiment value
+    """
 	if type(x) == float:
 		return 0
 	else:
@@ -128,6 +128,18 @@ genre_groups = {'hip-hop' : ['hip-hop', 'hip hop', 'hiphop', 'rap', 'trap', 'atl
 
 
 def under_max_length(arr, genre, max_songs):
+	"""Checks if label appears in array more than max_songs
+    
+    Parameters
+    ----------
+    arr: arr
+    	list of values that need to be checked on
+    genre: str
+    	label
+    max_songss: int
+    	number we do not want to exceed
+    """
+
 	counter = 0
 	for i in arr:
 		if i == genre:
@@ -137,7 +149,20 @@ def under_max_length(arr, genre, max_songs):
 	return True
 
 
+
 def get_top_genres(df, n_genres, sample_size = None):
+	"""Creates a balanced pandas DataFrame with the 5 genres that appear in the genre_hash
+	Dataframe that is returned has equal number of songs per genre
+    
+    Parameters
+    ----------
+    df: pd.DataFrame
+    	DataFrame that is going to be cleaned
+    n_genres: int
+    	number of genres we want to keep
+    sample_size: int
+    	number of songs we want per genre
+    """
 	genre_dict = {}
 	for genre in df.genre.values:
 		if genre in genre_dict:
@@ -178,7 +203,17 @@ def get_top_genres(df, n_genres, sample_size = None):
 
 
 
+
 def get_all_words(train, test):
+	"""Gets all words from train and test data
+    
+    Parameters
+    ----------
+    train: np.array
+    	all words in the train data 
+    test: np.array
+    	all words in the test data
+    """
 	all_words = set()
 	for _lyric in train:
 		lyric = _lyric.split(' ')
@@ -193,6 +228,13 @@ def get_all_words(train, test):
 
 
 def get_all_words2(train):
+	"""Gets all words from train data
+    
+    Parameters
+    ----------
+    train: np.array
+    	all words in the train data 
+    """
 	all_words = set()
 	for _lyric in train:
 		lyric = _lyric.split(' ')
@@ -201,7 +243,21 @@ def get_all_words2(train):
 	return list(all_words)
 
 
+
 def get_sets(X_train, X_test, y_train, y_test):
+	"""Gets set for training and testing data
+    
+    Parameters
+    ----------
+    X_train: np.array
+    	all words in the train data 
+    X_test: np.array
+    	all words in the test data
+    y_train: np.array
+    	all labels in the train data
+    y_test: np.array
+    	all labels in the test data
+    """
 	all_words = get_all_words(X_train, X_test)
 
 	training_set = []
@@ -228,7 +284,17 @@ def get_sets(X_train, X_test, y_train, y_test):
 	return training_set, testing_set
 
 
+
 def get_sets2(X, y):
+	"""Gets set for training data
+    
+    Parameters
+    ----------
+    X: np.array
+    	all words from data
+    y: np.array
+    	all labels from data
+    """
 	all_words = get_all_words2(X)
 
 	training_set = []
@@ -268,6 +334,18 @@ def get_sets2(X, y):
 
 
 def get_votes(test_set, models = None, save = False):
+	"""Gets votes from all models and returns the model itself as well as the score
+    
+    Parameters
+    ----------
+    test_set: arr
+    	all words in test data 
+    models: unpacked list
+    	all models being used
+    save: bool
+    	determines whether or not we save the model
+    """
+
 	print('getting council votes')
 	if save:
 		voting_model = Council(*models)
@@ -275,7 +353,7 @@ def get_votes(test_set, models = None, save = False):
 		save_model = open('../models/model-votes.pickle', 'wb')
 		pickle.dump(voting_model, save_model)
 		save_model.close()
-		print(f'saved pickle {voting_model}')
+		# print(f'saved pickle {voting_model}')
 	else:
 		model_file = open('../models/model-votes.pickle', 'rb')
 		voting_model = pickle.load(model_file)
@@ -286,8 +364,23 @@ def get_votes(test_set, models = None, save = False):
 
 
 def run_all_models(X_train, X_test, y_train, y_test, df):
+	"""Runs all models on training data
+    
+    Parameters
+    ----------
+    X_train: np.array
+    	all words in the train data 
+    X_test: np.array
+    	all words in the test data
+    y_train: np.array
+    	all labels in the train data
+    y_test: np.array
+    	all labels in the test data
+    df: pd.DataFrame
+    	DataFrame with all words and labels
+    """
 	scores = {}
-	models = [NaiveBayes, MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC]
+	models = [MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC, RandomForestClassifier]
 	ran_models = []
 
 	training_set, testing_set = get_sets(X_train, X_test, y_train, y_test)
@@ -317,34 +410,51 @@ def run_all_models(X_train, X_test, y_train, y_test, df):
 
 
 def test_all_models(X, y, model):
+	"""Runs all models on unseen testing data
+    
+    Parameters
+    ----------
+    X: np.array
+    	all words in data
+    y: np.array:
+    	all labels in data
+    df: pd.DataFrame
+    	DataFrame with all words and labels
+    """
+	scores = {}
+	models = [model, MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC, RandomForestClassifier]
+	whole_set = get_sets2(X, y)
+	for model in models:
+		print(model)
+		if type(model) == NaiveBayes:
+			y_hat = model.predict(X)
+			score = model.score(y, y_hat, metrics='accuracy')
+		elif type(model) == Council:
+			score = nltk.classify.accuracy(model, whole_set)
+		else:
+			model = model()
+			model_file = open(f'../models/model-{model}.pickle', 'rb')
+			model = pickle.load(model_file)
+			model_file.close()
 
-		scores = {}
-		models = [model, MultinomialNB, BernoulliNB, LogisticRegression, SGDClassifier, SVC, LinearSVC, NuSVC]
-
-		whole_set = get_sets2(X, y)
-		# train = whole_set[:int(len(whole_set)*.8)]
-		# test = whole_set[int(len(whole_set)*.8):]
-		for model in models:
-			if type(model) == NaiveBayes:
-				y_hat = model.predict(X)
-				score = model.score(y, y_hat, metrics='accuracy')
-			elif type(model) == Council:
-				score = nltk.classify.accuracy(model, whole_set)
-			else:
-				model = model()
-				model_file = open(f'../models/model-{model}.pickle', 'rb')
-				model = pickle.load(model_file)
-				model_file.close()
-
-				score = nltk.classify.accuracy(model, whole_set)
-			scores[model] = score
-		vote_model, vote_score = get_votes(whole_set)
-		scores[vote_model] = vote_score
-		return scores
+			score = nltk.classify.accuracy(model, whole_set)
+		scores[model] = score
+	vote_model, vote_score = get_votes(whole_set)
+	scores[vote_model] = vote_score
+	return scores
 
 
 
 def get_word_set_input(lyrics, n_genres = 5):
+	"""Gets lyric_bool dict, genre list for individual input
+    
+    Parameters
+    ----------
+    lyrics: string
+    	words that are getting mapped as boolens into dictionary
+    n_genres: int
+		numer of genres being classified against
+    """
 	df = pd.read_csv("../lyrics/clean_lyric_data.txt", delimiter = '|', lineterminator='\n')
 	df.columns = ['arist_name', 'song_name', 'lyrics', 'genre']
 	df['genre'] = df.loc[:, 'genre'].apply(clean_col)
@@ -365,40 +475,52 @@ def get_word_set_input(lyrics, n_genres = 5):
 
 
 def run_input():
-		print('\n')
-		song_name = input("Enter song name:\n").title()
-		artist_name = input("Enter artist name:\n").title()
-		print(' ')
-		print(f'Listening to "{song_name.title()}" by {artist_name.title()}')
-		lyric = clean(get_lyrics(artist_name, song_name))
-		if len(lyric.split(' ')) < 20:
-			print("\nCouldn't find song :(")
-			go_again = input('Go again? [Y][N]\n')
-			if go_again.lower() == 'y':
-				run_input()
-			return
-
-		model_file = open('../models/model.pickle', 'rb')
-		model = pickle.load(model_file)
-		model_file.close()
-
-		word_set_dict = get_word_set_input(lyric)
-		for genre in word_set_dict:
-			score = nltk.classify.accuracy(model, word_set_dict[genre])
-			if score == 1:
-				break
-
-		print(f'Prediction: {genre.title()}')
-		# # get_votes(lyrics)
-		# scores = model.predict(lyric, full_lyric = False)
-		# pprint(scores, show = 3)
+	"""Allows user to input song name and artist name via command line
+    
+    Parameters
+    ----------
+    """
+	print('\n')
+	song_name = input("Enter song name:\n").title()
+	artist_name = input("Enter artist name:\n").title()
+	print(' ')
+	print(f'Listening to "{song_name.title()}" by {artist_name.title()}')
+	lyric = clean(get_lyrics(artist_name, song_name))
+	if len(lyric.split(' ')) < 20:
+		print("\nCouldn't find song :(")
 		go_again = input('Go again? [Y][N]\n')
 		if go_again.lower() == 'y':
 			run_input()
 		return
 
+	model_file = open('../models/model.pickle', 'rb')
+	model = pickle.load(model_file)
+	model_file.close()
+
+	word_set_dict = get_word_set_input(lyric)
+	for genre in word_set_dict:
+		score = nltk.classify.accuracy(model, word_set_dict[genre])
+		if score == 1:
+			break
+
+	print(f'Prediction: {genre.title()}')
+	# # get_votes(lyrics)
+	# scores = model.predict(lyric, full_lyric = False)
+	# pprint(scores, show = 3)
+	go_again = input('Go again? [Y][N]\n')
+	if go_again.lower() == 'y':
+		run_input()
+	return
+
 
 def plot_sentiment(df):
+	"""Plots the sentiment of each genre
+    
+    Parameters
+    ----------
+    df: pd.DataFrame
+    	all data
+    """
 	unique_vals = np.unique(df.genre.values)
 	sent_dict = {}
 	for val in unique_vals:
@@ -415,8 +537,8 @@ def plot_sentiment(df):
 	x = list(xy.keys())
 	y = list(xy.values())
 	plt.bar(x, y)
-	plt.xlabel("Sentiment")
-	plt.ylabel("Genre")
+	plt.xlabel("Genre")
+	plt.ylabel("Sentiment")
 	plt.title("Average Sentiment by Genre")
 	plt.tight_layout
 	plt.savefig('../images/sentiment.png')
@@ -425,6 +547,11 @@ def plot_sentiment(df):
 
 
 def pprint3(genre_words_dict):
+	"""Prints all keywords in genre_keyword dictionary
+
+	genre_word_dict: dict
+		dictionary of genre : [keywords] pairs
+    """
 	for genre in genre_words_dict:
 		print(genre.title())
 		for word in genre_words_dict[genre]:
@@ -434,10 +561,19 @@ def pprint3(genre_words_dict):
 
 
 def _get_most_common_words(tfidf):
+	"""Prints the 30 most common words by class. Value of 3- is hardcoded
+	This function avoids words with a likelihood of 1 as these are possibly one-offs and may have no true meaning to the genre
+    
+    Parameters
+    ----------
+    tfidf: pd.DataFrame
+    	tfidf but transposed
+    """
 	genre_words_dict = {}
 	for genre in tfidf.columns.values:
 		genre_words_dict[genre]  = [i for i in list(tfidf.sort_values(genre).index.values)[::-1] if tfidf.loc[i, genre] < 1][:30]
 	pprint3(genre_words_dict)
+
 
 
 def plot_mnist_embedding(X, y, label_map, title=None):
@@ -465,26 +601,30 @@ def plot_mnist_embedding(X, y, label_map, title=None):
 
     for i in range(X.shape[0]):
     	plt.text(X[i, 0], X[i, 1], str(y[i]), color=plt.cm.tab10(y[i] / 10.), fontdict={'weight': 'bold', 'size': 12})
-    plt.ylim([.08, .12])
+    plt.ylim([.08, .14])
     plt.xlim([0.0005,0.0015])
-    # plt.tight_layout()
 
-    patch_0 = mpatches.Patch(color = plt.cm.tab10(y[y == 0][0] / 10.), label= label_map[str(0)])
-    patch_1 = mpatches.Patch(color = plt.cm.tab10(y[y == 1][0] / 10.), label= label_map[str(1)])
-    patch_2 = mpatches.Patch(color = plt.cm.tab10(y[y == 2][0] / 10.), label= label_map[str(2)])
-    patch_3 = mpatches.Patch(color = plt.cm.tab10(y[y == 3][0] / 10.), label= label_map[str(3)])
-    patch_4 = mpatches.Patch(color = plt.cm.tab10(y[y == 4][0] / 10.), label= label_map[str(4)])
-    patches = [patch_0, patch_1, patch_2, patch_3, patch_4]
+    patches = []
+    for i in range(len(np.unique(y))):
+    	patch = mpatches.Patch(color =  plt.cm.tab10(y[y == i][0] / 10.), label = label_map[str(i)] + '-' + str(i))
+    	patches.append(patch)
 
     plt.legend(handles = patches)
-    plt.savefig('../images/figure_of_truth_zoomed_in.png')
+    # plt.savefig('../images/figure_of_truth_zoomed_in.png')
     plt.show()
 
 
 
-def get_data(item):
-    data = list(item.lyrics.values)
-    labels = item.genre
+def get_data(df):
+	"""Labels data in DatFrame
+    
+    Parameters
+    ----------
+    df: pd.DataFrame
+    	all data
+    """
+    data = list(df.lyrics.values)
+    labels = df.genre
     le = LabelEncoder()
     y = le.fit_transform(labels)
     seen = []
@@ -496,7 +636,15 @@ def get_data(item):
     return data, y, genre_label_map
 
 
+
 def get_most_common_words(df):
+	"""Parent function to get most common words, initialized tfidf
+    
+    Parameters
+    ----------
+    df: pd.DataFrame
+    	all data
+    """
 	model = NaiveBayes()
 	model.fit(df)
 	tfidf = model.tfidf.T
@@ -505,6 +653,13 @@ def get_most_common_words(df):
 
 
 def vectorizer(data):
+	"""Creates a tfidf and returns it as an np.array, as well as the feature names (vocabulary)
+    
+    Parameters
+    ----------
+    data: arr
+    	list of all lyrics
+    """
 	tfidf = TfidfVectorizer()
 	X = tfidf.fit_transform(data).toarray()
 	return X, np.array(tfidf.get_feature_names())
@@ -512,6 +667,13 @@ def vectorizer(data):
 
 
 def plot_genre_labels(df):
+	"""Parent function to plotting genre cluster graph
+    
+    Parameters
+    ----------
+    df: pd.DataFrame
+    	all data
+    """
 	data, y, label_map = get_data(df)
 	vect, vocab = vectorizer(data)
 	ss = StandardScaler()
@@ -527,10 +689,33 @@ def main(run_models = False,
 		test_models = False, 
 		sample_size = False, 
 		user_input = False, 
-		test_unseen = False, 
+		test_perf = False, 
 		plot_sent = False,
 		most_common_words = False,
 		genre_plot = False):
+	"""Main function that can serve different purpose depending on parameters passed as True
+    
+    Parameters
+    ----------
+    run_models: bool
+    	if True, all models will be refitted with training data
+    n_genres: int
+    	number of genres we want to classify against
+    test_models: bool
+    	if True, all models will be tested on unseen data
+    sample_size: int
+    	how many songs per genre we want
+    user_input: bool
+    	if True, program will predict class of song given by user input from command line
+    test_perf: bool
+		if True, program will test performance of all models with varying sample size
+	plot_sent: bool
+		if True, program will plot sentiment of genres
+	most_common_words: bool
+		if True, program will print most common words for each genre
+	genre_plot: bool
+		if True, program will plot genre cluster plot
+    """
 
 	if plot_sent or most_common_words or genre_plot:
 		run_models = True
@@ -563,7 +748,6 @@ def main(run_models = False,
 		all_scores = list(run_all_models(X_train, X_test, y_train, y_test, df).items())
 
 		model = all_scores[-1][0]
-		print(type(model))
 		save_model = open("../models/model.pickle", "wb")
 		pickle.dump(model, save_model)
 		save_model.close()
@@ -571,7 +755,6 @@ def main(run_models = False,
 		pprint2(all_scores)
 
 	if test_models:
-		print('testing')
 		df = pd.read_csv("../lyrics/clean_test_lyric_data2.txt", delimiter = '|', lineterminator='\n')
 
 		model_file = open("../models/model.pickle", 'rb')
@@ -588,26 +771,31 @@ def main(run_models = False,
 		all_scores = list(test_all_models(X, y, model).items())
 
 		model = all_scores[-1][0]
-		print(type(model))
 		save_model = open("../models/model.pickle", "wb")
 		pickle.dump(model, save_model)
 		save_model.close()
 		print('Saved pickle')
 		pprint2(all_scores)
 
-	if test_unseen:
+	if test_perf:
 		test_performance()
 
 	if user_input:
-			run_input()
+		run_input()
 
 	return all_scores
 
 
 
 def plot_performance(scores_dict):
+	"""Plots the performance of each model 
+    
+    Parameters
+    ----------
+    scores_dict: dict
+    	dictionary of model : (size_of data, score) pairs 
+    """
 	x = [i[0] for i in list(scores_dict.items())[0][1]]
-	print(scores_dict)
 	colors = ['red', 'blue', 'yellow', 'orange', 'green', 'purple', 'cyan', 'fuchsia']
 	i = 0
 	for model in scores_dict:
@@ -622,6 +810,11 @@ def plot_performance(scores_dict):
 
 
 def test_performance():
+	"""Runs all models over range of data size
+    
+    Parameters
+    ----------
+    """
 	scores_dict = {}
 	for i in range(100, 500, 5):
 		scores = main(run_models = True, sample_size = i)
@@ -636,54 +829,6 @@ def test_performance():
 	plot_performance(scores_dict)
 
 
-	# {"Logistic Regression" : [(100, .65), (101, .65)]}
-
-
 if __name__ == '__main__':
-	main(genre_plot = True)
+	main(plot_sent = True)
 
-'''
-Model <custom_model.Council object at 0x000001DC3390CEB0> accuracy: 64.88%
-Model <SklearnClassifier(BernoulliNB())> accuracy: 63.78%
-Model <SklearnClassifier(LinearSVC())> accuracy: 62.68%
-Model <SklearnClassifier(NuSVC())> accuracy: 62.05%
-Model <SklearnClassifier(SVC())> accuracy: 62.05%
-Model <SklearnClassifier(LogisticRegression())> accuracy: 62.05%
-Model <SklearnClassifier(MultinomialNB())> accuracy: 60.16%
-Model <SklearnClassifier(SGDClassifier())> accuracy: 60.0%
-'''
-
-'''
-hip hop : most songs
-country: you belong with me
-punk: in the end linkin park
-edm: violence grimes
-rock: 
-'''
-
-'''
-Hip-Hop
-snub  insanely  os  interchange  snatch  lithuania  pats  mulholland  stacks  peeps  risqu  dranks  bubbled  29  inflame  tucked  scottie  outweigh  tactics  multi-million  multi-facet  matching  lingerie  socks  xs  extra-extra  tsa  psa  turbo  audemars
-Rock
-children.  zac  pawn  limbs  fetch  amalgam  grown?  runs.  itch.  cures  pinch  swells.  cry...  bite.  sincerest  barrel.  afraid.  see...  cost?  whine  understand.  tongue.  health  tale.  immune  cornell:  expedition  inspected  second-guessing  unfit
-Country
-erased  waylon  tonks  studied  stockholm  bluff  mechanic  farther.  vaya  con  dios  ga  senoritas  adieu  coconut  replaces  muchachas  jaeger  care-o  paycheck  good-hearted  doorstep  outlaws  toasts  both:  danglin  babe?  disappearin  gypsy  tabs
-Edm
-exclusive  lipstick-stained  dm  blah  beckham  controllin  balanced  backward  clapping  t-raw  c-breezy  untied  dragons  belgian  ruby  francis  play?  lucid  marrow  thinning  blood...  mentality  positivity  energy?  intuition  sealed  fairweather  binge  handshakes  warped
-Punk
-skipped  globalization  chomsky  noam  zinn  second-guessed  un-american  franco  distractions  dilemmas  reactions  poisons  whales  could?  rights!  imperialistic  sites  radio-active  lawrence  ostracized  abc  tim  d.i.y.  disgusts  obviousness  tully  piper  vegetation  moore  milkcrate
-
-
-
-Hip-Hop
-hoes  pussy  lil  thug  rep  molly  woo  mate  hunnid  holla  codeine  racks  bitches  hoe  text  er  motherfuckers  digits  granny  legend  titties  chanel  reign  niggas  motherfucking  sean:  cheek  nigga  follies  platinum   
-Country
-georgia  tractor  chevrolet  farm  sunrise  southern  wished  neon  ole  deer  womans  headlights  boo  george  drink.  alabama  horses  tail  towns  oh.  county  pledge  beer  hats  chevy  moonshine  searchin  hed  homegrown  islands 
-Punk
-opposite  slightly  confused?  sarah  driftin  magazines  design  kamikaze  sucks  there.  karaoke  young.  cramped  smashing  fine.  creeps  oven  devise  fills  uh-oh  martyrs  totally  comprehend  attempts  cool.  hitched  leans  afternoon  hasnt  dinosaurs   
-Rock
-hopefully  newo  unclear  carve  sailing  restore  heart.  done.  hangman  ghost.  baby...  premise  liza  pleasant  amputate  gerard  translates  constants  charitys  catharsis  bed?  shocked  notice?  virtue  penance  twenty-four  elevators  fountains  pennies  escalators  
-EDM
-barbie  di  picking  lonely?  everlasting  night...  las  r  brighter  stays  chokin  confide  rhythm  kingdom  ooh-ooh  eternal  dreamers  operator  natural  succeed  twilight  fearless  back...  ritual  charity  shy  shifting  circus  80s  lonesome  
-
-'''

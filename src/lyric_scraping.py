@@ -75,6 +75,15 @@ def get_genre_data(albums_dict):
 
  
 def get_lyrics(artist,song_title): 
+	"""Gets lyrics for a song
+    
+    Parameters
+    ----------
+    artist: str
+    	string of artist name 
+    song_title: str
+    	string of song name
+    """
     artist = artist.lower() 
     song_title = song_title.lower() 
     # remove all except alphanumeric characters from artist and song_title 
