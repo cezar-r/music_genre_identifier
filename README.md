@@ -59,10 +59,10 @@ data = [(
 data_train = data[ : .8 * len(data)]
 data_test = data[.8 * len(data) : ]
 
-classifier = SklearnClassifier(model)
+classifier = SklearnClassifier(model) 
 classifier.train(data_train)
 score = nltk.classify.accuracy(classifier, data_test)       
-
+score_proba = nltk.classify.prob_classify_many(classifier, data_test)
 ```
 
 2.  **Running the Models**
