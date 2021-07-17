@@ -100,7 +100,8 @@ Moving forward, there are a few things that can be done to improve the accuracy 
 ## Running the GUI
 
 To start the GUI, simply open the src directory in the command line and run the command `python run_gui.py`. Make sure you have all libraries installed as well (found below). If you do not have a pickle installed already go into src/lyric_predicting and run main(run_models = True) followed by main(test_models = True). This process can take up to an hour depending on your hardware.
-<img src="images/gui_empty.png"> <img src = "images/gui_example.png">
+
+<img src="images/gui_empty.png" width = 300 height = 200> <img src = "images/gui_example.png" width = 300 height = 200>
 
 
 ## Technologies used
