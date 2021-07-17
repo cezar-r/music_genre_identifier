@@ -23,33 +23,41 @@ class GUI:
     """
 	layout = [
 		[sg.Text('Enter song name', 
-				font=('Segoe UI Semibold', 20)), 
+				font=('Segoe UI Semibold', 20)
+			), 
 			sg.Input(background_color = 'black', 
 				text_color = 'white', 
 				key = 'i1', 
-				font=('Segoe UI Semibold', 20))
+				font=('Segoe UI Semibold', 20)
+				)
 		],
 		[sg.Text('Enter artist name', 
-				font=('Segoe UI Semibold', 20)), 
+				font=('Segoe UI Semibold', 20)
+			), 
 			sg.Input(background_color = 'black', 
 				text_color = 'white', 
 				key = 'i2', 
-				font=('Segoe UI Semibold', 20))
+				font=('Segoe UI Semibold', 20)
+				)
 		],
 		[sg.Button('Run', 
 				button_color = 'fuchsia', 
-				size=(15, 0)), 
+				size=(15, 0)
+			  ), 
 			sg.Button('Clear', 
 				button_color = 'white', 
-				size=(15, 0))
+				size=(15, 0)
+				 )
 		],
 		[sg.Text('Prediction:', 
-				font=('Segoe UI Semibold', 20))]
-		,
+				font=('Segoe UI Semibold', 20)
+			)
+		],
 		[sg.Text('              ', 
 				font=('Segoe UI Semibold', 20), 
 				key = 'pred', 
-				size=(25,1))
+				size=(25,1)
+			)
 		]
 	]
 
