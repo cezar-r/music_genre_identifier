@@ -54,6 +54,11 @@ data = [(
          },
          genre2
         )]
+
+# 80-20 test train split
+data_train = data[ : .8 * len(data)]
+data_test = data[.8 * len(data) : ]
+
 classifier = SklearnClassifier(model)
 classifier.train(data_train)
 score = nltk.classify.accuracy(classifier, data_test)       
