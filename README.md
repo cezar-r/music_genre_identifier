@@ -91,7 +91,7 @@ We can also see where the models might be getting confused with classification.
 Let's zoom in on that cluster
 <img src="images/figure_of_truth_zoomed_in.png">
 
-As you can see, clustering these genres with known information is already difficult enough. We can see how 4 out of the 5 genres are located in this tight cluster. With classification as difficult as this, I believe 60% is actually pretty solid.
+As you can see, clustering these genres with known information is already difficult enough. We can see how 4 out of the 5 genres are located in this tight cluster. With classification as difficult as this, I believe an accuracy of 64% is actually pretty solid.
 
 
 ## Outlook
