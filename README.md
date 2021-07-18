@@ -18,7 +18,7 @@ Currently, our dataset contains about 6,000 songs. Once every song is split into
 Using NLTK's sentiment library, I plotted the mean sentiment for each genre:
 <img src="images/sentiment.png" width=400 height=300>
 
-- I also built wordclouds for each of the genres. To view all word clouds, [click here](https://github.com/cezar-r/music_genre_identifier/tree/main/images).
+- I also built wordclouds for each of the genres by identifying the latent features for each genre. To view all word clouds, [click here](https://github.com/cezar-r/music_genre_identifier/tree/main/images).
 <img src = "images/hip-hop_word_cloud.png" width=400 height=300>
 
 
