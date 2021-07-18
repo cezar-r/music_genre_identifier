@@ -6,7 +6,7 @@ Music tends to be split by genres (which are usually split into subgenres as wel
 
 ## EDA
 
-Currently, our data contains about 6,000 songs. Once every song is split into 5 genres, we are left with 519 songs per genre (the minimum number of songs in one of the 5 genres is the number of songs that is going to be used for every genre, to balance out our data as best as possible. In our case, punk only had 519 songs so 519 songs from each genre will be used).
+Currently, our dataset contains about 6,000 songs. Once every song is split into 5 genres, we are left with 519 songs per genre (the minimum number of songs in one of the 5 genres is the number of songs that is going to be used for every genre, to balance out our data as best as possible. In our case, punk only had 519 songs so 519 songs from each genre will be used).
 
 1. **Collecting Data**
 
