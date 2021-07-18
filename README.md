@@ -67,7 +67,7 @@ score_proba = nltk.classify.log_likelihood(classifier, data_test)
 
 2.  **Running the Models**
 
-- To get the best results we possibly can, data is run over every single model. After doing this, I used an ensemble (or voting system) using each of these models to cast a vote. The mode of the votes is the final guess for the ensemble model. 
+- To get the best results possible, every model is utilized. After doing this, I used an ensemble (or voting system) using each of these models to cast a vote. The mode of the votes is the final guess for the ensemble model. 
 
 
 ## Results
