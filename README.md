@@ -119,7 +119,6 @@ To start the GUI, simply open the src directory in the command line and run the 
 - NLTK
 - PySimpleGUI
 - JSON
-- Random
 - Requests
 - Urllib
 - BeautifulSoup
