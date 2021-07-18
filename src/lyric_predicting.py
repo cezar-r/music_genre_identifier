@@ -533,14 +533,12 @@ def plot_sentiment(df):
 				sent_dict[val] = [sentiment]
 
 	xy = {k : np.mean(v) for k, v in list(sent_dict.items())}
-	c = ['', 'yellow', '']
 	x = list(xy.keys())
 	y = list(xy.values())
 	plt.bar(x, y)
 	plt.xlabel("Genre")
 	plt.ylabel("Sentiment")
 	plt.title("Average Sentiment by Genre")
-	plt.tight_layout
 	plt.savefig('../images/sentiment.png')
 	# plt.show()
 
@@ -561,8 +559,8 @@ def pprint3(genre_words_dict):
 
 
 def _get_most_common_words(tfidf):
-	"""Prints the 30 most common words by class. Value of 3- is hardcoded
-	This function avoids words with a likelihood of 1 as these are possibly one-offs and may have no true meaning to the genre
+	"""Prints the 30 most important words by class. Value of 30 is hardcoded
+	This function avoids words with a likelihood of 1.0 as these are possibly one-offs and may have no true meaning to the genre
     
     Parameters
     ----------
@@ -597,10 +595,10 @@ def plot_mnist_embedding(X, y, label_map, title=None):
     X = (X - x_min) / (x_max - x_min)
 
     plt.rcParams["figure.figsize"] = (18, 7)
-    # plt.set_size_inches(15, 8)
 
     for i in range(X.shape[0]):
     	plt.text(X[i, 0], X[i, 1], str(y[i]), color=plt.cm.tab10(y[i] / 10.), fontdict={'weight': 'bold', 'size': 12})
+	
     plt.ylim([.08, .14])
     plt.xlim([0.0005,0.0015])
 
@@ -610,13 +608,13 @@ def plot_mnist_embedding(X, y, label_map, title=None):
     	patches.append(patch)
 
     plt.legend(handles = patches)
-    # plt.savefig('../images/figure_of_truth_zoomed_in.png')
-    plt.show()
+    plt.savefig('../images/figure_of_truth_zoomed_in.png')
+    # plt.show()
 
 
 
 def get_data(df):
-	"""Labels data in DatFrame
+	"""Labels data in DataFrame
     
     Parameters
     ----------
@@ -638,7 +636,7 @@ def get_data(df):
 
 
 def get_most_common_words(df):
-	"""Parent function to get most common words, initialized tfidf
+	"""Parent function to get most common words, initializes tfidf
     
     Parameters
     ----------
@@ -693,26 +691,26 @@ def main(run_models = False,
 		plot_sent = False,
 		most_common_words = False,
 		genre_plot = False):
-	"""Main function that can serve different purpose depending on parameters passed as True
+	"""Main function that can serve different purpose depending on parameters passed
     
     Parameters
     ----------
     run_models: bool
-    	if True, all models will be refitted with training data
+    	if True, all models will be refitted and retrained with training data
     n_genres: int
-    	number of genres we want to classify against
+    	number of genres we want to classify 
     test_models: bool
     	if True, all models will be tested on unseen data
     sample_size: int
-    	how many songs per genre we want
+    	how many songs per genre we want. if false, maximum number of songs possible will be used
     user_input: bool
     	if True, program will predict class of song given by user input from command line
     test_perf: bool
-		if True, program will test performance of all models with varying sample size
+		if True, program will test performance of all models with varying sample size and plot (can take up to 24 hours to run)
 	plot_sent: bool
 		if True, program will plot sentiment of genres
 	most_common_words: bool
-		if True, program will print most common words for each genre
+		if True, program will print most distinguishable words for each genre 
 	genre_plot: bool
 		if True, program will plot genre cluster plot
     """
