@@ -138,7 +138,7 @@ class NaiveBayes:
 
 
 class Council(ClassifierI):
-	"""Custom Naive Bayes model that takes the mean likelihood rather than log sum of likelihoods
+	"""Ensemble model that uses a voting system given a list of classifiers
     
     Methods
     ----------
