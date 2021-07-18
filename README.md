@@ -2,23 +2,23 @@
 
 ### Background
 
-Music tends to be split by genre (which are usually split into subgenres as well), so we are going to analyze how lyrics can possibly be used to predict what genre of music a certain song is.
+Music tends to be split by genres (which are usually split into subgenres as well), so we are going to analyze how lyrics can possibly be used to predict what genre of music a certain song is.
 
 ## EDA
 
-Currently, this project contains about 6,000 songs. Once we split these songs into 5 genres, we are left with 519 songs per genre. We use the minimum number of songs in a genre to make sure all genres are as balanced as possible.
+Currently, our data contains about 6,000 songs. Once every song is split into 5 genres, we are left with 519 songs per genre (the minimum number of songs in one of the 5 genres is the number of songs that is going to be used for every genre, to balance out our data as best as possible. In our case, punk only had 519 songs so 519 songs from each genre will be used).
 
 1. **Collecting Data**
 
-- To begin collecting data, I hardcoded the names of many artists into a list. For each artist in this list we are able to get their top 50 tracks using the [Last FM API](https://www.last.fm/api). The Last FM API also returned corresponding genres for each song. Using the artist name and song name, we were then able to find the lyrics on [AZLyrics](https://www.azlyrics.com/). These lyrics are then cleaned of any source code text, as well as other non-letter characters. This data is written into a txt file in this format: `song name|artist name|lyrics|genre`.
+- To begin collecting data, I hardcoded the names of many artists into a list. The top 50 tracks for each artist is then scraped using the [Last FM API](https://www.last.fm/api). The Last FM API also returns corresponding genres for each song. Using the artist name and song name, lyrics can then be fetched from [AZLyrics](https://www.azlyrics.com/). These lyrics are then cleaned of any source code text, as well as other non-letter characters. This data is written into a txt file in this format: `song name|artist name|lyrics|genre`.
 
 2. **Analyzing Data**
 
-- With over 6,000 songs stored, we're ready to do some EDA and analyze our data. The first analysis I did was sentiment analysis.
-Using NLTK's sentiment library, we were able to get the mean sentiment for each genre which can be seen below:
+- With over 2,500 songs being used, there was enough data to do some EDA. The first analysis I did was sentiment analysis.
+Using NLTK's sentiment library, I plotted the mean sentiment for each genre:
 <img src="images/sentiment.png" width=400 height=300>
 
-- We were also able to build word clouds for each of our genres. To view all word clouds, [click here](https://github.com/cezar-r/music_genre_identifier/tree/main/images).
+- I also built wordclouds for each of the genres. To view all word clouds, [click here](https://github.com/cezar-r/music_genre_identifier/tree/main/images).
 <img src = "images/hip-hop_word_cloud.png" width=400 height=300>
 
 
@@ -67,7 +67,7 @@ score_proba = nltk.classify.log_likelihood(classifier, data_test)
 
 2.  **Running the Models**
 
-- To get the best results we possibly can, our data is run over every single model. After doing this, I used an ensemble (or voting system) using each of these models to cast a vote. The mode of the votes is the final guess for the ensemble model. 
+- To get the best results we possibly can, data is run over every single model. After doing this, I used an ensemble (or voting system) using each of these models to cast a vote. The mode of the votes is the final guess for the ensemble model. 
 
 
 ## Results
@@ -91,7 +91,7 @@ We can also see where the models might be getting confused with classification.
 Let's zoom in on that cluster
 <img src="images/figure_of_truth_zoomed_in.png">
 
-As you can see, clustering these genres with known information is already difficult enough. We can see how 4 out of the 5 genres are predominantly located in this tight cluster. With classification as difficult as this, I believe an accuracy of 64% is actually pretty solid.
+As you can see, clustering these genres with known information is already difficult enough. Notice how 4 out of the 5 genres are predominantly located in this tight cluster. With classes as indistinguishable as these, I believe an accuracy of 64% is actually relatively strong.
 
 
 ## Outlook
