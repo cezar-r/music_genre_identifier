@@ -55,7 +55,7 @@ data = [(
          genre2
         )]
 
-# 80-20 test train split
+# 80-20 train test split
 data_train = data[ : .8 * len(data)]
 data_test = data[.8 * len(data) : ]
 
