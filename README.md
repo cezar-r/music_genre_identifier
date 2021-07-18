@@ -96,10 +96,11 @@ As you can see, clustering these genres with known information is already diffic
 
 ## Outlook
 
-Moving forward, there are a few things that can be done to improve the accuracy of these models:
+Moving forward, there are a few things that can be done to improve the accuracy:
 - Get more data -> at least 2,000 songs per genre
 - Consult music experts on how to better group subgenres to genres -> is "country rock" country or rock?
 - Clean lyrics even more -> even after 3 cleaning stages, there were many words with non-letter characters attached to them.
+- Run more models -> There are a handful of models that I did not use that could improve the accuracy of the ensemble model.
 
 
 ## Running the GUI
