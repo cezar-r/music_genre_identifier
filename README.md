@@ -14,7 +14,7 @@ Currently, this project contains about 6,000 songs. Once we split these songs in
 
 2. **Analyzing Data**
 
-- With over 6,000 songs stored, we're ready to do some EDA and analyze our data. With lyrics there are two main analyses we can do: sentiment analysis and word clouds.
+- With over 6,000 songs stored, we're ready to do some EDA and analyze our data. The first analysis I did was sentiment analysis.
 Using NLTK's sentiment library, we were able to get the mean sentiment for each genre which can be seen below:
 <img src="images/sentiment.png" width=400 height=300>
 
