@@ -2,7 +2,7 @@
 
 ### Background
 
-Music tends to be split by genres (which are usually split into subgenres as well), so we are going to analyze how lyrics can possibly be used to predict what genre of music a certain song is.
+Music tends to be split into genres (which are usually split into subgenres as well), so we are going to analyze how lyrics can possibly be used to predict what genre of music a certain song is.
 
 ## EDA
 
